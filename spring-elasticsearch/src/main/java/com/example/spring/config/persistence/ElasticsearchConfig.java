@@ -18,19 +18,21 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 public class ElasticsearchConfig {
 
 	@Value("${elasticsearch.host}")
-	private String EsHost;
+	private String host;
 	@Value("${elasticsearch.port}")
-	private int EsPort;
+	private int port;
 	@Value("${elasticsearch.clustername}")
-	private String EsClusterName;
+	private String clusterName;
 
 	@Bean
 	public Client client() throws Exception {
 
-		Settings esSettings = Settings.settingsBuilder().put("cluster.name", EsClusterName).build();
+		Settings settings = Settings.settingsBuilder().put("cluster.name", clusterName).build();
 
-		return TransportClient.builder().settings(esSettings).build()
-							  .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
+		TransportClient build = TransportClient.builder().settings(settings).build();
+		build.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host), port));
+
+		return build;
 	}
 
 	@Bean
